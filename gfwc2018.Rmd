@@ -1,0 +1,82 @@
+---
+title: "Big Rapids Garden Tour 2018"
+subtitle: "General Federation of Women's Clubs"
+author: "Carrie Franklund"
+output:
+  word_document: default
+  sansfont: Arial
+  pdf_document: 
+    latex_engine: xelatex
+  html_document:
+    df_print: paged
+---
+\setmonofont{Arial}
+\setsansfont{Arial}
+\setromanfont{Arial}
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readxl)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+theData <- read_xlsx("GFWC.xlsx", na="NA")
+```
+
+
+## Garden Tour Data
+
+A total of `r nrow(theData)` surveys were completed following the 2018 GFWC Garden Tour. 
+
+## Advertising Effectiveness
+
+```{r publicity, echo=FALSE, fig.width=8, fig.height=6}
+heard <- colSums(theData[,1:5])
+heard[["Other"]] <- sum(!is.na(theData$Other))
+heard <- as.vector(heard)
+names(heard) <- c("Pioneer", "Tri-County Shopper", "Pioneer Shopper", "Radio", "Friend", "Other")
+par(mar=c(10,5,.5,.5))
+barplot(heard, las=2, ylim=c(0,50), ylab="Number of Votes", xlab="", col = "dodgerblue4")
+mtext("Source", side=1, line=8)
+text(x=c(0.7, 1.9, 3.1, 4.3, 5.5, 6.7),y=heard+1.5 , as.character(heard))
+box()
+```
+
+
+```{r table1, echo=FALSE, results='as-is'}
+
+theData[!is.na(theData$Other), 6]
+
+```
+
+## Day Preference
+```{r days, echo=FALSE, fig.width=8, fig.height=6}
+days <- colSums(theData[,17:23])
+barplot(days, las=1, ylab="Number of Votes", xlab="Day of the Week", col = "dodgerblue4", ylim = c(0,50))
+text(x=c(0.7, 1.9, 3.1, 4.3, 5.5, 6.7, 7.9),y=days+1.5 , as.character(days))
+segments(1.4,45,4.8,45, col="dodgerblue4", lwd=6)
+text(x=3.1, y=47, "Preferred", cex=1.2)
+
+box()
+```
+
+
+## Time Preference
+```{r times, echo=FALSE, fig.width=8, fig.height=6}
+times <- colSums(theData[,9:16])
+barplot(times, las=1, ylab="Number of Votes", xlab="Time (PM)", col = "dodgerblue4", ylim = c(0,50))
+text(x=c(0.7, 1.9, 3.1, 4.3, 5.5, 6.7, 7.9, 9.1),y=times+1.5 , as.character(times))
+segments(1.4,45,8.5,45, col="dodgerblue4", lwd=6)
+text(x=5.1, y=47, "Preferred", cex=1.2)
+box()
+```
+
+
+## Best Features
+
+
+## Opportunities for Improvement  
+There were only `r sum(!is.na(theData$Least))` suggestions made in response to the "least favorite part" prompt. Of these...
+
+
+## Recruiting Effectiveness  
+A total of `r sum(theData$Interested=="Yes", na.rm=TRUE)` people (`r round(sum(theData$Interested=="Yes", na.rm=TRUE)/nrow(theData)*100,1)`%) indicated that they would like to learn more about GFWC. 
